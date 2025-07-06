@@ -1,0 +1,14 @@
+{
+  "name": "afse-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the AFSE - Sticker Album project.",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=3000"
+  },
+  "author": "AI Assistant",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.0"
+  }
+}

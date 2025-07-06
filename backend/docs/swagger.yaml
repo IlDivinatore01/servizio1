@@ -1,0 +1,193 @@
+openapi: 3.0.0
+info:
+  title: AFSE - Sticker Album API
+  description: API for managing a virtual sticker album, including users, stickers, packs, and trades.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5001/api
+    description: Development server
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                favoriteSuperhero:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request
+
+  /auth/login:
+    post:
+      summary: Login an existing user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User logged in successfully, returns JWT token
+        '401':
+          description: Invalid credentials
+
+  /users/me:
+    get:
+      summary: Get current user profile
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: Not authorized
+
+  /stickers/packs:
+    get:
+      summary: Get all available sticker packs
+      tags: [Stickers]
+      responses:
+        '200':
+          description: A list of sticker packs
+          
+  /stickers/packs/buy/{packId}:
+    post:
+      summary: Buy a sticker pack
+      tags: [Stickers]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: packId
+          required: true
+          schema:
+            type: string
+          description: The ID of the sticker pack to buy
+      responses:
+        '200':
+          description: Sticker pack purchased successfully
+        '400':
+          description: Not enough credits
+        '404':
+          description: Pack not found
+
+  /trades:
+    post:
+      summary: Create a new trade offer
+      tags: [Trades]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                proposerItems:
+                  type: array
+                  items:
+                    type: object
+                requestedItems:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '201':
+          description: Trade created successfully
+    get:
+      summary: Get all pending trades
+      tags: [Trades]
+      responses:
+        '200':
+          description: A list of pending trades
+
+  /trades/{id}/accept:
+    post:
+      summary: Accept a trade offer
+      tags: [Trades]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the trade to accept
+      responses:
+        '200':
+          description: Trade accepted
+        '400':
+          description: Invalid trade acceptance
+          
+  /admin/offers:
+    post:
+      summary: Create a special offer pack (Admin only)
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                cost:
+                  type: number
+                numStickers:
+                  type: number
+                availableUntil:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: Special offer created successfully
+        '403':
+          description: Forbidden, user is not an admin
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+tags:
+  - name: Auth
+    description: Authentication
+  - name: Users
+    description: User management
+  - name: Stickers
+    description: Sticker and pack management
+  - name: Trades
+    description: Trade management
+  - name: Admin
+    description: Administrator operations
