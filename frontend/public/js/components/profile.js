@@ -101,6 +101,14 @@ const ProfilePage = {
                                 </form>
                             </div>
                         </div>
+                        <!-- Delete Profile Section -->
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5 class="card-title text-danger">Danger Zone</h5>
+                                <button id="delete-profile-btn" class="btn btn-outline-danger w-100">Delete My Profile</button>
+                                <div class="form-text text-danger mt-2">This will permanently delete your account, all stickers, and all trades. This action cannot be undone.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -232,7 +240,8 @@ const ProfilePage = {
         const downgradeBtn = document.getElementById('downgrade-admin-btn');
         if (downgradeBtn) {
             downgradeBtn.addEventListener('click', async () => {
-                if (!confirm('Are you sure you want to downgrade to a normal user?')) return;
+                const confirmed = await showConfirmModal('Are you sure you want to downgrade to a normal user?');
+                if (!confirmed) return;
                 try {
                     await downgradeToUser();
                     showToast('You are now a normal user.', 'success');
@@ -263,5 +272,99 @@ const ProfilePage = {
         setupPasswordToggle('current-password', 'toggle-current-password');
         setupPasswordToggle('new-password', 'toggle-new-password');
         setupPasswordToggle('confirm-password', 'toggle-confirm-password');
+
+        // Delete Profile logic
+        const deleteBtn = document.getElementById('delete-profile-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async () => {
+                // Show a modal to ask for password
+                const password = await showPasswordPromptModal('To delete your profile, please enter your password:');
+                if (!password) return;
+                const confirmed = await showConfirmModal('Are you absolutely sure? This will permanently delete your account, all stickers, and all trades. This action cannot be undone.', 'Delete Forever', 'Cancel');
+                if (!confirmed) return;
+                try {
+                    await deleteUserProfile(password);
+                    showToast('Your account has been deleted. Goodbye!', 'success');
+                    // Remove token and redirect to home (force reload, clear hash)
+                    localStorage.removeItem('token');
+                    setTimeout(() => {
+                        window.location.hash = '';
+                        window.location.replace('/');
+                    }, 1500);
+                } catch (err) {
+                    showToast(err.message || 'Failed to delete account. Please check your password.', 'danger');
+                }
+            });
+        }
+
+        // Helper: Show a modal to prompt for password
+        async function showPasswordPromptModal(message) {
+            return new Promise((resolve) => {
+                let modal = document.getElementById('site-password-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'site-password-modal';
+                    modal.innerHTML = `
+                    <div class="modal fade" tabindex="-1" id="site-password-modal" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Password Required</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>${message}</p>
+                            <input type="password" class="form-control" id="site-password-modal-input" placeholder="Enter your password" autocomplete="current-password" />
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="site-password-cancel">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="site-password-ok">Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>`;
+                    document.body.appendChild(modal);
+                }
+                const input = modal.querySelector('#site-password-modal-input');
+                input.value = '';
+                // Show modal (Bootstrap 5)
+                const bsModal = new bootstrap.Modal(modal.querySelector('.modal'));
+                bsModal.show();
+                // Cleanup old listeners
+                const okBtn = modal.querySelector('#site-password-ok');
+                const cancelBtn = modal.querySelector('#site-password-cancel');
+                const closeBtn = modal.querySelector('.btn-close');
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    if (closeBtn) closeBtn.removeEventListener('click', onCancel);
+                };
+                function onOk() {
+                    cleanup();
+                    bsModal.hide();
+                    resolve(input.value);
+                }
+                function onCancel() {
+                    cleanup();
+                    bsModal.hide();
+                    resolve(null);
+                }
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                if (closeBtn) closeBtn.addEventListener('click', onCancel);
+                // Enter key submits
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        onOk();
+                    }
+                });
+                // Also handle modal dismissal (e.g., clicking backdrop)
+                modal.querySelector('.modal').addEventListener('hidden.bs.modal', () => {
+                    cleanup();
+                    resolve(null);
+                }, { once: true });
+                setTimeout(() => input.focus(), 200);
+            });
+        }
     }
 };

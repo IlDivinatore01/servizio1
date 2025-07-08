@@ -18,10 +18,8 @@ connectDB();
 // Route files
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-const stickerRoutes = require('./routes/stickerRoutes');
 const tradeRoutes = require('./routes/tradeRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const characterRoutes = require('./routes/characterRoutes');
+const stickerRoutes = require('./routes/stickerRoutes');
 
 const app = express();
 
@@ -54,15 +52,14 @@ app.use(cors({
 const swaggerDocument = YAML.load(path.join(__dirname, 'docs', 'swagger.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Mount API routers BEFORE static assets and SPA handler
+// Mount API routers
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/stickers', stickerRoutes);
 app.use('/api/trades', tradeRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/characters', characterRoutes);
+app.use('/api/stickers', stickerRoutes);
+app.use('/api/characters', require('./routes/characterRoutes'));
 
-// Serve static frontend files
+// Serve static frontend files AFTER API routes
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Handle SPA: All other GET requests not handled by previous routes should return the frontend

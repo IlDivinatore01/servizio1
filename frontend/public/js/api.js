@@ -75,16 +75,19 @@ const updateUserPassword = (passwordData) => request('/users/updatepassword', 'P
 const purchaseCredits = (data) => request('/users/credits/purchase', 'POST', data);
 const upgradeToAdmin = (adminPassword) => request('/users/upgrade-admin', 'POST', { adminPassword });
 const downgradeToUser = () => request('/users/downgrade-admin', 'POST');
+const deleteUserProfile = (password) => request('/users/me', 'DELETE', { password });
 
 // STICKERS & PACKS
 const getStickerPacks = () => request('/stickers/packs');
 const buyPack = (packId, quantity) => request(`/stickers/packs/buy/${packId}`, 'POST', { quantity: Number(quantity) });
 const sellSticker = (stickerId) => request('/stickers/sell', 'POST', { stickerId });
+const getAllStickers = () => request('/stickers/all');
 
 // TRADES
 const getTradeOffers = () => request('/trades');
 const createTrade = (tradeData) => request('/trades', 'POST', tradeData);
 const acceptTrade = (tradeId) => request(`/trades/${tradeId}/accept`, 'POST');
+const cancelTrade = (tradeId) => request(`/trades/${tradeId}`, 'DELETE');
 
 // ADMIN PACKS
 const createCustomPack = (packData) => request('/admin/custom-pack', 'POST', packData);

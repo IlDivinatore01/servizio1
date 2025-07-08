@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const TradeOffer = require('../models/TradeOffer');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -39,13 +40,34 @@ exports.updateDetails = async (req, res, next) => {
   }
 };
 
-// @desc    Delete user account
+// @desc    Delete user account (with password confirmation and cascading trade deletion)
 // @route   DELETE /api/users/me
 // @access  Private
 exports.deleteMe = async (req, res, next) => {
+  const { password } = req.body;
+  if (!password) {
+    return res.status(400).json({ success: false, message: 'Password is required to delete your account.' });
+  }
   try {
-    await User.findByIdAndDelete(req.user.id);
-    res.status(200).json({ success: true, data: {} });
+    const user = await User.findById(req.user.id).select('+password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+    // Check password
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Incorrect password.' });
+    }
+    // Delete all trades where user is proposer or target
+    await TradeOffer.deleteMany({
+      $or: [
+        { proposerId: user._id },
+        { targetId: user._id }
+      ]
+    });
+    // Delete user (removes stickers as well)
+    await User.findByIdAndDelete(user._id);
+    res.status(200).json({ success: true, message: 'Account and all associated data deleted.' });
   } catch (err) {
     next(err);
   }

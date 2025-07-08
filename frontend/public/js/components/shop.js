@@ -260,6 +260,10 @@ const ShopPage = {
         }
     },
     addEventListeners: () => {
+        const shopPageContainer = document.querySelector('.container');
+        if (!shopPageContainer) {
+            return; // Don't add listeners if the shop page isn't rendered
+        }
         // Pack purchase confirmation
         const packConfirmModal = new bootstrap.Modal(document.getElementById('packConfirmModal'));
         const packOpeningModal = new bootstrap.Modal(document.getElementById('packOpeningModal'));
@@ -519,7 +523,8 @@ const ShopPage = {
         document.querySelectorAll('.delete-pack-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const packId = e.target.getAttribute('data-pack-id');
-                if (confirm('Are you sure you want to delete this pack?')) {
+                const confirmed = await showConfirmModal('Are you sure you want to delete this pack?');
+                if (confirmed) {
                     try {
                         await deleteCustomPack(packId);
                         showToast('Pack deleted!', 'success');

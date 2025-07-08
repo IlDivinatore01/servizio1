@@ -99,7 +99,7 @@ const RegisterPage = {
                 window.location.hash = '/album';
             } catch (err) {
                 console.error('Registration error:', err);
-                showToast('Registration failed. Please check your details and try again.');
+                showToast(err?.message || 'Registration failed. Please check your details and try again.', 'danger');
             }
         });
         // Password visibility toggles
