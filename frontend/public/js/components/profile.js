@@ -14,7 +14,7 @@ const ProfilePage = {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h5 class="card-title">Profile Information</h5>
-                                        <div class="card bg-light">
+                                        <div class="card">
                                             <div class="card-body">
                                                 <div class="d-flex justify-content-between mb-2">
                                                     <span><strong>Username:</strong></span>
@@ -57,7 +57,7 @@ const ProfilePage = {
                                     </div>
                                     <div class="col-md-6">
                                         <h5 class="card-title">Account Statistics</h5>
-                                        <div class="card bg-light">
+                                        <div class="card">
                                             <div class="card-body">
                                                 <div class="d-flex justify-content-between mb-2">
                                                     <span>Credits:</span>

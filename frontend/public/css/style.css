@@ -1,22 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --primary-font: 'Lora', serif;
+    --heading-font: 'IM Fell English SC', serif;
+    --background-dark: #121212;
+    --surface-color: #1e1e1e;
+    --primary-color: #d4af37; /* Gold */
+    --primary-variant-color: #b8860b; /* Darker Gold */
+    --secondary-color: #aaaaaa;
+    --text-color: #e0e0e0;
+    --text-color-muted: #a0a0a0;
+    --border-color: #333333;
+    --shadow-color: rgba(212, 175, 55, 0.1);
+    --shadow-color-hover: rgba(212, 175, 55, 0.2);
+    --gryffindor-red: #740001;
+    --slytherin-green: #1a472a;
+    --hufflepuff-yellow: #ffdb00;
+    --ravenclaw-blue: #0e1a40;
+}
+
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #f8f9fa;
+    background-color: var(--background-dark);
+    background-image: url('/public/img/background.png'); /* Add a subtle background pattern */
+    background-attachment: fixed;
+    background-size: cover;
+    color: var(--text-color);
+    font-family: var(--primary-font);
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand, .modal-title {
+    font-family: var(--heading-font);
+    color: var(--primary-color);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 main {
     flex: 1;
 }
 
+.navbar {
+    background-color: rgba(30, 30, 30, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--primary-variant-color);
+}
+
+.nav-link {
+    color: var(--text-color) !important;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-variant-color);
+    color: var(--background-dark);
+    font-family: var(--heading-font);
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-variant-color);
+    border-color: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 10px var(--shadow-color-hover);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: #888888;
+}
+
+.form-control, .form-select {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--shadow-color);
+}
+
+.form-control::placeholder {
+    color: var(--text-color-muted);
+}
+
+.card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 15px var(--shadow-color-hover);
+}
+
 .sticker-card {
     transition: transform 0.2s;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-color);
 }
 
 .sticker-card:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px var(--shadow-color-hover);
 }
 
 .sticker-card img {
@@ -25,33 +121,69 @@ main {
 }
 
 .sticker-owned {
-    border: 2px solid gold;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 15px var(--shadow-color); /* Soften the glow */
 }
 
-.sticker-duplicate {
+.sticker-not-owned {
+    border: 2px solid var(--border-color);
+    opacity: 0.6;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.sticker-not-owned:hover {
+    opacity: 1;
+    border-color: var(--secondary-color);
+}
+
+.sticker-not-owned .card-img-top {
+    filter: grayscale(80%);
+    transition: filter 0.3s ease;
+}
+
+.sticker-not-owned:hover .card-img-top {
+    filter: grayscale(0%);
+}
+
+.sticker-quantity-badge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 10px;
+    background-color: rgba(212, 175, 55, 0.9);
+    color: var(--background-dark);
+    padding: 3px 10px;
+    border-radius: 15px;
     font-size: 0.9em;
+    font-weight: bold;
+    font-family: var(--heading-font);
+    border: 1px solid var(--primary-variant-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.trade-offer-card.trade-unavailable {
+    opacity: 0.65;
+    border-left-color: var(--secondary-color);
+}
+
+.trade-offer-card.trade-unavailable .card-header {
+    background-color: rgba(128, 128, 128, 0.1);
 }
 
 .trade-offer-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--primary-variant-color);
 }
 
 /* Enhanced Card Styles for Pack Opening */
 .card-reveal {
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    background: var(--surface-color);
     border-radius: 12px;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--border-color);
     overflow: hidden;
     position: relative;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px var(--shadow-color);
     transition: all 0.3s ease;
     animation: cardAppear 0.6s ease-out forwards;
     opacity: 0;
@@ -67,7 +199,8 @@ main {
 
 .card-reveal:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 25px var(--shadow-color-hover);
+    border-color: var(--primary-color);
 }
 
 .card-image-container {
@@ -79,7 +212,7 @@ main {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #222, #333);
     position: relative;
 }
 
@@ -102,9 +235,9 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #222, #333);
     font-size: 2rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .rarity-badge {
@@ -117,47 +250,48 @@ main {
     font-weight: bold;
     text-transform: uppercase;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    font-family: var(--heading-font);
 }
 
 .rarity-common {
-    background: rgba(108, 117, 125, 0.9);
+    background: rgba(108, 117, 125, 0.7);
     color: white;
     border-color: #6c757d;
 }
 
 .rarity-rare {
-    background: rgba(0, 123, 255, 0.9);
+    background: rgba(30, 144, 255, 0.7); /* Dodger Blue */
     color: white;
-    border-color: #007bff;
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    border-color: #1e90ff;
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
 }
 
 .rarity-epic {
-    background: rgba(102, 16, 242, 0.9);
+    background: rgba(147, 112, 219, 0.7); /* Medium Purple */
     color: white;
-    border-color: #6610f2;
-    box-shadow: 0 0 15px rgba(102, 16, 242, 0.4);
+    border-color: #9370db;
+    box-shadow: 0 0 15px rgba(147, 112, 219, 0.4);
 }
 
 .rarity-legendary {
-    background: rgba(255, 193, 7, 0.9);
-    color: #212529;
-    border-color: #ffc107;
-    box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+    background: rgba(212, 175, 55, 0.8);
+    color: #121212;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
 }
 
 .card-info {
     padding: 12px;
-    background: white;
+    background: var(--surface-color);
 }
 
 .card-name {
     margin: 0 0 4px 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #212529;
+    color: var(--text-color);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -166,7 +300,7 @@ main {
 .card-house {
     margin: 0;
     font-size: 0.8rem;
-    color: #6c757d;
+    color: var(--text-color-muted);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -180,7 +314,7 @@ main {
     bottom: 0;
     pointer-events: none;
     opacity: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
     transform: translateX(-100%);
     transition: all 0.6s ease;
 }
@@ -191,17 +325,17 @@ main {
 }
 
 .card-sparkle.legendary {
-    background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.8) 50%, transparent 70%);
+    background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.5) 50%, transparent 70%);
     animation: legendarySparkle 2s infinite;
 }
 
 .card-sparkle.epic {
-    background: linear-gradient(45deg, transparent 30%, rgba(138,43,226,0.6) 50%, transparent 70%);
+    background: linear-gradient(45deg, transparent 30%, rgba(147, 112, 219, 0.4) 50%, transparent 70%);
     animation: epicSparkle 2.5s infinite;
 }
 
 .card-sparkle.rare {
-    background: linear-gradient(45deg, transparent 30%, rgba(0,123,255,0.6) 50%, transparent 70%);
+    background: linear-gradient(45deg, transparent 30%, rgba(30, 144, 255, 0.4) 50%, transparent 70%);
     animation: rareSparkle 3s infinite;
 }
 
@@ -243,12 +377,13 @@ main {
 /* Pack opening modal enhancements */
 .modal-content {
     border-radius: 15px;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background-color: var(--surface-color);
 }
 
 .modal-header {
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid var(--border-color);
     border-radius: 15px 15px 0 0;
 }
 
@@ -262,8 +397,8 @@ main {
 
 /* Pack opening animation */
 @keyframes packGlow {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+    0%, 100% { box-shadow: 0 0 20px var(--shadow-color); }
+    50% { box-shadow: 0 0 40px var(--shadow-color-hover); }
 }
 
 .pack-opening {
@@ -287,4 +422,56 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.list-group-item {
+    background-color: transparent;
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.list-group-item strong {
+    color: var(--primary-color);
+}
+
+.sticker-select-list {
+    background-color: var(--surface-color);
+    border-color: var(--border-color) !important;
+}
+
+.sticker-select-list .sticker-row:hover {
+    background-color: #2a2a2a;
+}
+
+.toast {
+    background-color: var(--surface-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color);
+}
+
+.toast-header {
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.toast-header strong {
+    color: var(--primary-color);
+}
+
+.table {
+    color: var(--text-color);
+}
+
+.table-dark {
+    color: var(--text-color);
+    background-color: var(--surface-color);
+}
+
+.table > thead > tr > th {
+    color: var(--primary-color);
+}
+
+.table-hover > tbody > tr:hover {
+    color: var(--primary-color);
+    background-color: #2a2a2a;
 }
