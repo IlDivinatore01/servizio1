@@ -1,7 +1,6 @@
 // A simple client-side router
 const navigateTo = (path) => {
-    window.history.pushState({}, path, window.location.origin + path);
-    router();
+    window.location.hash = path;
 };
 
 const getToken = () => localStorage.getItem('authToken');

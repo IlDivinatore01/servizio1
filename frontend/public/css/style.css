@@ -43,3 +43,248 @@ main {
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
 }
+
+/* Enhanced Card Styles for Pack Opening */
+.card-reveal {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    animation: cardAppear 0.6s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.8) rotateY(-10deg);
+}
+
+@keyframes cardAppear {
+    to {
+        opacity: 1;
+        transform: scale(1) rotateY(0deg);
+    }
+}
+
+.card-reveal:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-image-container {
+    width: 100%;
+    aspect-ratio: 3/4;
+    min-height: 180px;
+    max-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.card-reveal:hover .card-image {
+    transform: scale(1.08);
+}
+
+.card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.rarity-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.rarity-common {
+    background: rgba(108, 117, 125, 0.9);
+    color: white;
+    border-color: #6c757d;
+}
+
+.rarity-rare {
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.rarity-epic {
+    background: rgba(102, 16, 242, 0.9);
+    color: white;
+    border-color: #6610f2;
+    box-shadow: 0 0 15px rgba(102, 16, 242, 0.4);
+}
+
+.rarity-legendary {
+    background: rgba(255, 193, 7, 0.9);
+    color: #212529;
+    border-color: #ffc107;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+}
+
+.card-info {
+    padding: 12px;
+    background: white;
+}
+
+.card-name {
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #212529;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.card-house {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.card-sparkle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: all 0.6s ease;
+}
+
+.card-reveal:hover .card-sparkle {
+    opacity: 1;
+    transform: translateX(100%);
+}
+
+.card-sparkle.legendary {
+    background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.8) 50%, transparent 70%);
+    animation: legendarySparkle 2s infinite;
+}
+
+.card-sparkle.epic {
+    background: linear-gradient(45deg, transparent 30%, rgba(138,43,226,0.6) 50%, transparent 70%);
+    animation: epicSparkle 2.5s infinite;
+}
+
+.card-sparkle.rare {
+    background: linear-gradient(45deg, transparent 30%, rgba(0,123,255,0.6) 50%, transparent 70%);
+    animation: rareSparkle 3s infinite;
+}
+
+@keyframes legendarySparkle {
+    0%, 100% { opacity: 0; transform: translateX(-100%) rotate(45deg); }
+    50% { opacity: 1; transform: translateX(100%) rotate(45deg); }
+}
+
+@keyframes epicSparkle {
+    0%, 100% { opacity: 0; transform: translateX(-100%) rotate(45deg); }
+    50% { opacity: 0.8; transform: translateX(100%) rotate(45deg); }
+}
+
+@keyframes rareSparkle {
+    0%, 100% { opacity: 0; transform: translateX(-100%) rotate(45deg); }
+    50% { opacity: 0.6; transform: translateX(100%) rotate(45deg); }
+}
+
+/* Responsive improvements */
+@media (max-width: 576px) {
+    .card-image-container {
+        height: 140px;
+    }
+    
+    .card-name {
+        font-size: 0.8rem;
+    }
+    
+    .card-house {
+        font-size: 0.7rem;
+    }
+    
+    .rarity-badge {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+}
+
+/* Pack opening modal enhancements */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+#cards-reveal {
+    min-height: 300px;
+}
+
+/* Pack opening animation */
+@keyframes packGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+}
+
+.pack-opening {
+    animation: packGlow 2s infinite;
+}
+
+/* Responsive grid for pack opening cards */
+.pack-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+    margin: 0 auto 2rem auto;
+    width: 100%;
+    max-width: 900px;
+}
+
+.pack-card-item {
+    width: 100%;
+    max-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

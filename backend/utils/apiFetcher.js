@@ -3,22 +3,30 @@ const axios = require('axios');
 const fetchCharactersFromAPI = async () => {
     try {
         console.log(`Fetching characters from ${process.env.POTTER_API_URL}...`);
-        // The PotterDB API paginates results. We might need to fetch multiple pages.
-        // For simplicity, this seed will fetch the first page only.
         const response = await axios.get(process.env.POTTER_API_URL);
-        
-        // Map the API data to our Sticker schema
-        const characters = response.data.data.map(char => ({
+        const data = response.data;
+
+        const characters = data.map(char => ({
             characterId: char.id,
-            name: char.attributes.name,
-            imageUrl: char.attributes.image,
-            // Synthesize description [cite: 215]
-            description: `A ${char.attributes.species || 'character'} from the house of ${char.attributes.house || 'an unknown house'}. Born on ${char.attributes.born || 'an unknown date'}.`,
-            house: char.attributes.house,
-            species: char.attributes.species,
-            wand: char.attributes.wand,
-            patronus: char.attributes.patronus,
-            // Simple rarity assignment for example
+            name: char.name,
+            imageUrl: char.image,
+            description: `A ${char.species || 'character'} from the house of ${char.house || 'an unknown house'}. Born on ${char.dateOfBirth || 'an unknown date'}.`,
+            house: char.house,
+            species: char.species,
+            gender: char.gender,
+            ancestry: char.ancestry,
+            actor: char.actor,
+            alternate_names: char.alternate_names || [],
+            alive: typeof char.alive === 'boolean' ? char.alive : undefined,
+            eyeColour: char.eyeColour,
+            hairColour: char.hairColour,
+            dateOfBirth: char.dateOfBirth,
+            yearOfBirth: char.yearOfBirth,
+            wand: char.wand || {},
+            hogwartsStudent: char.hogwartsStudent,
+            hogwartsStaff: char.hogwartsStaff,
+            wizard: char.wizard,
+            patronus: char.patronus,
             rarity: Math.floor(Math.random() * 5) + 1
         }));
 

@@ -3,13 +3,16 @@ const Navbar = {
         const token = getToken();
         const userLinks = `
             <li class="nav-item">
-                <a class="nav-link" href="/album" onclick="navigateTo('/album'); event.preventDefault();">My Album</a>
+                <a class="nav-link" href="#/album">My Album</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/shop" onclick="navigateTo('/shop'); event.preventDefault();">Shop</a>
+                <a class="nav-link" href="#/shop">Shop</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/trades" onclick="navigateTo('/trades'); event.preventDefault();">Trade Market</a>
+                <a class="nav-link" href="#/trades">Trade Market</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#/profile">Profile</a>
             </li>
             <li class="nav-item">
                 <a id="logout-btn" class="nav-link" href="#">Logout</a>
@@ -17,13 +20,16 @@ const Navbar = {
         `;
         const guestLinks = `
             <li class="nav-item">
-                <a class="nav-link" href="/login" onclick="navigateTo('/login'); event.preventDefault();">Login / Register</a>
+                <a class="nav-link" href="#/login">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#/register">Register</a>
             </li>
         `;
 
         return `
             <div class="container-fluid">
-                <a class="navbar-brand" href="/" onclick="navigateTo('/'); event.preventDefault();">AFSE</a>
+                <a class="navbar-brand" href="#/">AFSE</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -41,7 +47,7 @@ const Navbar = {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 removeToken();
-                navigateTo('/login');
+                window.location.hash = '/login';
             });
         }
     }

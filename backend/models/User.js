@@ -48,6 +48,8 @@ const UserSchema = new mongoose.Schema({
   credits: {
     type: Number,
     default: 0,
+    get: v => Math.trunc(v), // Always return integer
+    set: v => Math.trunc(v), // Always store as integer
   },
   role: {
     type: String,

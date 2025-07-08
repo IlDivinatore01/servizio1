@@ -3,12 +3,17 @@ const dotenv = require('dotenv');
 const Sticker = require('../models/Sticker');
 const StickerPack = require('../models/StickerPack');
 const { fetchCharactersFromAPI } = require('../utils/apiFetcher');
+const path = require('path');
 
 // Load env vars
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Connect to DB
-mongoose.connect(process.env.MONGO_URI);
+const mongoURI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}`;
+mongoose.connect(mongoURI);
+
+console.log('MONGO_USER:', process.env.MONGO_USER);
+console.log('MONGO_CLUSTER:', process.env.MONGO_CLUSTER);
 
 const importData = async () => {
     try {

@@ -8,23 +8,35 @@ const { getRandomStickers } = require('../utils/Randomizer');
 // @access  Private
 exports.buyStickerPack = async (req, res, next) => {
     try {
+        console.log('DEBUG buyStickerPack req.body:', req.body);
+        let rawQuantity = req.body.quantity;
+        const quantity = parseInt(rawQuantity, 10) || 1;
+        console.log('DEBUG buyStickerPack parsed quantity:', quantity);
+
+        if (quantity < 1) {
+            return res.status(400).json({ success: false, message: 'Quantity must be at least 1.' });
+        }
+
         const pack = await StickerPack.findById(req.params.packId);
         if (!pack) {
             return res.status(404).json({ success: false, message: 'Sticker pack not found' });
         }
 
         const user = await User.findById(req.user.id);
+        const totalCost = pack.cost * quantity;
 
-        if (user.credits < pack.cost) {
+        if (user.credits < totalCost) {
             return res.status(400).json({ success: false, message: 'Not enough credits' });
         }
 
         // Deduct credits
-        user.credits -= pack.cost;
+        user.credits -= totalCost;
 
         // Get random stickers
-        const newStickers = await getRandomStickers(pack.numStickers);
-        if (newStickers.length < pack.numStickers) {
+        const totalStickersToGet = pack.numStickers * quantity;
+        const newStickers = await getRandomStickers(totalStickersToGet);
+        
+        if (newStickers.length < totalStickersToGet) {
             return res.status(500).json({ success: false, message: 'Could not generate a full sticker pack. Not enough unique stickers in the system.'});
         }
 
@@ -46,8 +58,9 @@ exports.buyStickerPack = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: 'Sticker pack purchased successfully!',
-            data: newStickers.map(s => s.name),
+            message: `Successfully purchased ${quantity} sticker pack(s)!`,
+            data: newStickers,
+            newCredits: user.credits
         });
     } catch (err) {
         next(err);
@@ -65,7 +78,17 @@ exports.getStickerPacks = async (req, res, next) => {
             { isSpecialOffer: true, availableUntil: { $gt: new Date() } }
           ]
         });
-        res.status(200).json({ success: true, data: packs });
+        // Add isCustom: true for all packs that are not the standard pack and not special offer
+        const packsWithCustomFlag = packs.map(pack => {
+            // Standard pack: name === 'Standard Pack'
+            // Custom pack: not special offer and not standard
+            const isCustom = !pack.isSpecialOffer && pack.name !== 'Standard Pack';
+            return {
+                ...pack.toObject(),
+                isCustom
+            };
+        });
+        res.status(200).json({ success: true, data: packsWithCustomFlag });
     } catch (err) {
         next(err);
     }

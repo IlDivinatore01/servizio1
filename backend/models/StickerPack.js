@@ -18,9 +18,6 @@ const StickerPackSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  availableUntil: { // For time-limited special offers
-    type: Date,
-  },
   createdAt: {
     type: Date,
     default: Date.now,

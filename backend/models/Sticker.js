@@ -26,18 +26,26 @@ const StickerSchema = new mongoose.Schema({
   species: {
     type: String,
   },
-  wand: {
-    type: String,
-  },
   patronus: {
     type: String,
   },
-  rarity: {
-    type: Number,
-    min: 1,
-    max: 5,
-    default: 1, // Default rarity
+  gender: { type: String },
+  ancestry: { type: String },
+  actor: { type: String },
+  alternate_names: { type: [String], default: [] },
+  alive: { type: Boolean },
+  eyeColour: { type: String },
+  hairColour: { type: String },
+  dateOfBirth: { type: String },
+  yearOfBirth: { type: Number },
+  wand: {
+    wood: { type: String },
+    core: { type: String },
+    length: { type: Number }
   },
+  hogwartsStudent: { type: Boolean },
+  hogwartsStaff: { type: Boolean },
+  wizard: { type: Boolean },
 });
 
 module.exports = mongoose.model('Sticker', StickerSchema);

@@ -3,44 +3,45 @@ const navbarContainer = document.getElementById('navbar-container');
 
 // Define the routes
 const routes = {
-    '/': { page: AlbumPage, requiresAuth: true, defaultGuest: '/login' },
-    '/login': { page: AuthPage, requiresAuth: false },
+    '/': { page: HomePage, requiresAuth: false },
+    '/login': { page: LoginPage, requiresAuth: false },
+    '/register': { page: RegisterPage, requiresAuth: false },
     '/album': { page: AlbumPage, requiresAuth: true },
     '/shop': { page: ShopPage, requiresAuth: true },
     '/trades': { page: TradesPage, requiresAuth: true },
+    '/profile': { page: ProfilePage, requiresAuth: true },
 };
 
 // The router function
 const router = async () => {
-    const path = window.location.pathname;
+    const path = window.location.hash.slice(1) || '/';
     const isAuthenticated = !!getToken();
 
     // Find the matching route
-    let route = routes[path] || routes['/']; 
-    
+    const route = routes[path] || routes['/'];
+
     // Redirect if auth requirements are not met
     if (route.requiresAuth && !isAuthenticated) {
-        navigateTo(route.defaultGuest || '/login');
+        navigateTo('/login');
         return;
     }
-    if (!route.requiresAuth && isAuthenticated && path === '/login') {
+    if (!route.requiresAuth && isAuthenticated && (path === '/login' || path === '/register' || path === '/')) {
         navigateTo('/album');
         return;
-    }
-    
-    // Fallback for guest trying to access authenticated root
-    if (path === '/' && !isAuthenticated) {
-        route = routes['/login'];
     }
 
     // Render the page
     if (appRoot && route.page) {
         // Show a loading spinner or message
         appRoot.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-        appRoot.innerHTML = await route.page.render();
-        if (route.page.addEventListeners) {
-            route.page.addEventListeners();
-        }
+        
+        // Use a short timeout to allow the spinner to render before loading the page content
+        setTimeout(async () => {
+            appRoot.innerHTML = await route.page.render();
+            if (route.page.addEventListeners) {
+                route.page.addEventListeners();
+            }
+        }, 50);
     }
 
     // Always re-render the navbar to reflect auth state
@@ -51,5 +52,10 @@ const router = async () => {
 };
 
 // Listen to navigation events
-window.addEventListener('popstate', router);
+window.addEventListener('hashchange', router);
 window.addEventListener('DOMContentLoaded', router);
+
+// Update navigateTo to use hash
+window.navigateTo = (path) => {
+    window.location.hash = path;
+};
